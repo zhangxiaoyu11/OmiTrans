@@ -1,4 +1,7 @@
 # OmiTrans
+***Please also have a look at our multi-omics multi-task DL freamwork 👀:***
+[OmiEmbed](https://github.com/zhangxiaoyu11/OmiEmbed)
+
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5728496.svg)](https://doi.org/10.5281/zenodo.5728496)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/ff39650740bb4973b211a4fcfb6c1695)](https://www.codacy.com/gh/zhangxiaoyu11/OmiTrans/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=zhangxiaoyu11/OmiTrans&amp;utm_campaign=Badge_Grade)
 [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/zhangxiaoyu11/OmiEmbed/blob/main/LICENSE)
@@ -11,3 +14,10 @@
 **Xiaoyu Zhang** (x.zhang18@imperial.ac.uk)
 
 Data Science Institute, Imperial College London
+
+## OmiEmbed
+***Please also have a look at our multi-omics multi-task DL freamwork 👀:***
+[OmiEmbed](https://github.com/zhangxiaoyu11/OmiEmbed)
+
+## License
+This source code is licensed under the [MIT](https://github.com/zhangxiaoyu11/OmiTrans/blob/master/LICENSE) license.
