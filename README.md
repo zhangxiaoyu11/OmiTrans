@@ -15,6 +15,20 @@
 
 Data Science Institute, Imperial College London
 
+## Citation
+If you use this code in your research, please cite our paper.
+```bibtex
+@misc{zhang2021omitrans,
+      title={OmiTrans: generative adversarial networks based omics-to-omics translation framework}, 
+      author={Xiaoyu Zhang and Yike Guo},
+      year={2021},
+      eprint={2111.13785},
+      archivePrefix={arXiv},
+      primaryClass={q-bio.GN}
+}
+```
+Paper Link: [https://arxiv.org/abs/2111.13785](https://arxiv.org/abs/2111.13785)
+
 ## OmiEmbed
 ***Please also have a look at our multi-omics multi-task DL freamwork 👀:***
 [OmiEmbed](https://github.com/zhangxiaoyu11/OmiEmbed)
