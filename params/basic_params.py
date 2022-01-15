@@ -31,8 +31,8 @@ class BasicParams:
         parser.add_argument('--experiment_name', type=str, default='test',
                             help='name of the folder in the checkpoint directory')
         # Dataset parameters
-        parser.add_argument('--data_root', required=True,
-                            help='path to input data (should have sub folders train, val, test, etc)')
+        parser.add_argument('--data_root', type=str, default='./data',
+                            help='path to input data')
         parser.add_argument('--dataset_mode', type=str, default='single_file',
                             help='choose the dataset mode, options: [separate_files | single_file]')
         parser.add_argument('--batch_size', type=int, default=4,
