@@ -568,6 +568,8 @@ class FCG(nn.Module):
             output_dim (int)      -- the dimension of the output omics data
             norm_layer            -- normalization layer
             leaky_slope (float)   -- the negative slope of the Leaky ReLU activation function
+            dropout_p (float)       -- probability of an element to be zeroed in a dropout layer
+            latent_dim (int)        -- the dimensionality of the latent space
         """
         super(FCG, self).__init__()
 
@@ -709,6 +711,7 @@ class LinearRegression(nn.Module):
         recon_A = self.lr(x)
         return recon_A
 
+
 class FCBlock(nn.Module):
     """
     Linear => Norm1D => LeakyReLU
@@ -754,6 +757,35 @@ class FCBlock(nn.Module):
     def forward(self, x):
         y = self.fc_block(x)
         return y
+
+
+class TransformerG(nn.Module):
+    """
+    Create a transformer generator network
+    """
+    def __init__(self, input_dim, output_dim, norm_layer=nn.BatchNorm1d, leaky_slope=0.2, dropout_p=0, latent_dim=256,
+                 nhead=8):
+        """
+        Construct a transformer generator
+        Parameters:
+            input_dim (int)       -- the dimension of the input omics data
+            output_dim (int)      -- the dimension of the output omics data
+            norm_layer            -- normalization layer
+            leaky_slope (float)   -- the negative slope of the Leaky ReLU activation function
+            dropout_p (float)     -- probability of an element to be zeroed in a dropout layer
+            latent_dim (int)      -- the dimensionality of the latent space
+            nhead (int)           -- the number of heads in the transformer encoder layer
+        """
+        super(TransformerG, self).__init__()
+
+        mul_fc_block = [FCBlock(input_dim, latent_dim, norm_layer, leaky_slope, dropout_p),
+                        nn.TransformerEncoderLayer(d_model=latent_dim, nhead=nhead),
+                        nn.Linear(latent_dim, output_dim)
+                        ]
+        self.mul_fc = nn.Sequential(*mul_fc_block)
+
+    def forward(self, x):
+        return self.mul_fc(x)
 
 
 # DISCRIMINATOR
@@ -1074,7 +1106,7 @@ class FCD(nn.Module):
         return output
 
 
-class FCDSingle(nn.Module): 
+class FCDSingle(nn.Module):
     """
     Defines a single hidden layer fully-connected discriminator
     """
@@ -1154,6 +1186,34 @@ class FCDSep(nn.Module):
         level_3 = torch.cat((level_3_B, level_3_A), 2)
         level_4 = self.encode_fc_3(level_3)
         output = self.encode_fc_4(level_4)
+        return output
+
+
+class TransformerD(nn.Module):
+    """
+    Create a transformer discriminator network
+    """
+    def __init__(self, input_1_dim, input_2_dim, hidden_dim=64, output_dim=16, nhead=8):
+        """
+        Construct a transformer discriminator
+        Parameters:
+            input_1_dim (int)       -- the dimension of the first input omics data (A)
+            input_2_dim (int)       -- the dimension of the second input omics data (B)
+            output_dim (int)        -- the output dimension of the discriminator
+            nhead (int)             -- the number of heads in the transformer encoder layer
+        """
+        super(TransformerD, self).__init__()
+
+        layers = [nn.Linear(input_1_dim+input_2_dim, hidden_dim),
+                  nn.TransformerEncoderLayer(d_model=hidden_dim, nhead=nhead),
+                  nn.LeakyReLU(negative_slope=0.2, inplace=True),
+                  nn.Linear(hidden_dim, output_dim)
+                  ]
+        self.layers = nn.Sequential(*layers)
+
+    def forward(self, input1, input2):
+        combined_input = torch.cat([input1, input2], dim=2)
+        output = self.layers(combined_input)
         return output
 
 
@@ -1283,6 +1343,8 @@ def define_G(input_chan_num, output_chan_num, netG, A_dim, B_dim, gen_filter_num
         net = FcVedSep(B_dim, A_dim, norm_layer, leaky_slope, dropout_p, latent_dim=latent_dim)
     elif netG == 'linear_regression':
         net = LinearRegression(B_dim, A_dim)
+    elif netG == 'transformer_g':
+        net = TransformerG(B_dim, A_dim, norm_layer, leaky_slope, dropout_p, latent_dim=latent_dim)
     else:
         raise NotImplementedError('Generator model name [%s] is not recognized' % netG)
 
@@ -1334,6 +1396,8 @@ def define_D(input_1_chan_num, input_2_chan_num, dis_filter_num, netD, A_dim, B_
         net = FCDSep(A_dim, B_dim, norm_layer, leaky_slope)
     elif netD == 'fcd_single':
         net = FCDSingle(A_dim, B_dim)
+    elif netD == 'transformer_d':
+        net = TransformerD(A_dim, B_dim)
     else:
         raise NotImplementedError('Discriminator model name [%s] is not recognized' % netD)
     return init_net(net, init_type, init_gain, gpu_ids)
