@@ -19,8 +19,6 @@ Data Science Institute, Imperial College London
 
 OmiTrans is a generative adversarial networks (GANs) based omics-to-omics translation framework.
 
-Paper Link: [https://arxiv.org/abs/2111.13785](https://arxiv.org/abs/2111.13785)
-
 ## Getting Started
 
 ### Prerequisites
@@ -66,19 +64,6 @@ cd checkpoints/test/
 -   Visualise the metrics and losses
 ```bash
 tensorboard --logdir=tb_log --bind_all
-```
-
-## Citation
-If you use this code in your research, please cite our paper.
-```bibtex
-@misc{zhang2021omitrans,
-      title={OmiTrans: generative adversarial networks based omics-to-omics translation framework}, 
-      author={Xiaoyu Zhang and Yike Guo},
-      year={2021},
-      eprint={2111.13785},
-      archivePrefix={arXiv},
-      primaryClass={q-bio.GN}
-}
 ```
 
 ## OmiEmbed
